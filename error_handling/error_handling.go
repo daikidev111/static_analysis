@@ -2,7 +2,6 @@ package error_handling
 
 import (
 	"go/ast"
-	"go/token"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
@@ -34,19 +33,17 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	inspect.Preorder(nodeFilter, func(n ast.Node) {
 		switch n := n.(type) {
 		case *ast.GoStmt:
-			fn := n.Call.Fun
-			// fnTyp := fn.Type This is an interface so you have to cast it
-			fnTyp, ok := fn.(*ast.FuncType)
+			fn, ok := n.Call.Fun.(*ast.FuncLit)
 			if !ok {
-				return // empty return
+				return
 			}
-			ls := fnTyp.Params.List
+			ls := fn.Type.Params.List
 			for _, l := range ls { // inside lists
 				chTyp, ok := l.Type.(*ast.ChanType)
 				if !ok { // if it fails to cast, ,the it will cause panic
 					return
 				}
-				if chTyp.Arrow != token.NoPos {
+				if chTyp.Arrow != 0 {
 					return
 				}
 				val, ok := chTyp.Value.(*ast.Ident)
@@ -54,9 +51,8 @@ func run(pass *analysis.Pass) (interface{}, error) {
 					return
 				}
 				if val.Name == "error" {
-					pass.Reportf(val.NamePos, "FIND!!!!")
+					pass.Reportf(val.NamePos, "identifier is goroutine")
 				}
-
 			}
 
 		}
