@@ -8,7 +8,7 @@ import (
 
 func main() {
 	errorCh := make(chan error)
-	go func(ch chan error) {
+	go func(ch chan error) { // want "identifier is goroutine"
 		ch <- errors.New("error")
 	}(errorCh)
 
