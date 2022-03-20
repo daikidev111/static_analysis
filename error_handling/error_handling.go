@@ -2,15 +2,16 @@ package error_handling
 
 import (
 	"go/ast"
+	"go/parser"
+	"go/token"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 )
 
-const doc = "error_handling is ..."
+const doc = "error_handling suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup"
 
-// Analyzer is ...
 var Analyzer = &analysis.Analyzer{
 	Name: "error_handling",
 	Doc:  doc,
@@ -21,9 +22,9 @@ var Analyzer = &analysis.Analyzer{
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
-	// fset := token.NewFileSet()
-	// f, _ := parser.ParseFile(fset, "sample.go", nil, 0)
-	// ast.Print(fset, f)
+	fset := token.NewFileSet()
+	f, _ := parser.ParseFile(fset, "sample.go", nil, 0)
+	ast.Print(fset, f)
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 
 	nodeFilter := []ast.Node{
