@@ -12,16 +12,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/daikidev111/clean_arch_go/">
+  <a href="https://github.com/daikidev111/static_analysis">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Static analysis tool</h3>
 
   <p align="center">
-    Static analysis is a great tool to find problems often related to performance, coding style, and some logic errors without running the application.
-    I have implemented a tool that suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup.
-    The reason for building this tool is that errGroup is generally more useful when you wish to execute groups of goroutines working on subtasks of a common task in parallel.
+    The better error handling suggestion for a concurrent execution using go routine.
     <br />
     <a href="https://github.com/daikidev111/static_analysis/"><strong>Explore the docs »</strong></a>
     <br />
@@ -41,14 +39,6 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#Running MySQL, Redis, PHPMyAdmin, Swagger, Proxy containers with docker-compose">Installation</a></li>
-      </ul>
-    </li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -57,12 +47,53 @@
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## About The Project ##
+Static analysis is a great tool to find problems often related to performance, coding style, and some logic errors without running the application.
+I have implemented a tool that suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup.
+The reason for building this tool is that errGroup is generally more useful when you wish to handle error for groups of goroutines working on subtasks of a common task in parallel.
 
 
-**AST fields**
-
-
+## How I did it ##
+ 
+When you run the test from error_handling_test.go, it prints out the following AST.
+Then, analyze the following AST tree that is comprised of AST nodes.
+```sh
+    88  .  .  .  .  .  1: *ast.GoStmt { <- AST node for Go Routine 
+    89  .  .  .  .  .  .  Go: sample.go:11:2
+    90  .  .  .  .  .  .  Call: *ast.CallExpr {
+    91  .  .  .  .  .  .  .  Fun: *ast.FuncLit { <- AST node for function literal
+    92  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+    93  .  .  .  .  .  .  .  .  .  Func: sample.go:11:5
+    94  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList { <- AST node for field list
+    95  .  .  .  .  .  .  .  .  .  .  Opening: sample.go:11:9
+    96  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) { <- contains one param
+    97  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+    98  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    99  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   100  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: sample.go:11:10
+   101  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "ch"
+   102  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   103  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   104  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "ch"
+   105  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 97)
+   106  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+   107  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+   108  .  .  .  .  .  .  .  .  .  .  .  .  }
+   109  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.ChanType {
+   110  .  .  .  .  .  .  .  .  .  .  .  .  .  Begin: sample.go:11:13
+   111  .  .  .  .  .  .  .  .  .  .  .  .  .  Arrow: - <- We care about only this arrow type for now.
+   112  .  .  .  .  .  .  .  .  .  .  .  .  .  Dir: 3
+   113  .  .  .  .  .  .  .  .  .  .  .  .  .  Value: *ast.Ident {
+   114  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: sample.go:11:18
+   115  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "error" <- if it uses error then we can confirm that this goroutine func is used for error handling
+   116  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+   117  .  .  .  .  .  .  .  .  .  .  .  .  }
+   118  .  .  .  .  .  .  .  .  .  .  .  }
+   119  .  .  .  .  .  .  .  .  .  .  }
+   120  .  .  .  .  .  .  .  .  .  .  Closing: sample.go:11:23
+   121  .  .  .  .  .  .  .  .  .  }
+   122  .  .  .  .  .  .  .  .  }
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -72,77 +103,6 @@
 * [Skeleton](https://github.com/gostaticanalysis/skeleton)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-This is an instruction of how to set up and start the project locally.
-To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-* Install Go
-
-  Follow the steps shown in this [website](https://golang.org/dl/)
-
-### Installation
-
-1. Clone this repo
-   ```sh
-   git clone https://github.com/daikidev111/clean_arch_go/
-   ```
-2. Install goimports and golangci-lint
-   ```sh
-   make local-install
-   ```
- 
-### Running MySQL, Redis, PHPMyAdmin, Swagger, Proxy containers with docker-compose
-
-```sh
-  docker-compose up -d
-  
-  The list of containers should be like this.
-  
-             Name                         Command               State                 Ports              
--------------------------------------------------------------------------------------------------------
-clean_arch_go_mysql_1        docker-entrypoint.sh mysql ...   Up      0.0.0.0:3306->3306/tcp, 33060/tcp
-clean_arch_go_phpmyadmin_1   /docker-entrypoint.sh apac ...   Up      0.0.0.0:4000->80/tcp             
-clean_arch_go_proxy_1        /docker-entrypoint.sh ngin ...   Up      0.0.0.0:3010->3010/tcp, 80/tcp   
-clean_arch_go_redis_1        docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp           
-clean_arch_go_swagger-ui_1   /docker-entrypoint.sh sh / ...   Up      80/tcp, 127.0.0.1:3000->8080/tcp
-```
-
-### Check if golangci-lint and gofmt work
-
-gofmt is a tool that automatically formats the Go source code.
-   ```sh
-   make fmt
-   ```
-golangci-lint is a tool that checks if the source code follows the coding standard.
-   ```sh
-   make lint
-   ```
-
-### Initiate the API
-   ```sh
-   go run ./cmd/main.go
-   ```
-
-### Execute the /user/create API, using the Curl command shown below;
-   ```sh
-curl -X 'POST' \
-  'http://localhost:8080/user/create' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "name": "Joji"
-}'
-  ```
-
-### 
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 <!-- LICENSE -->
 ## License
@@ -157,7 +117,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Daiki Kubo - [LinkedIn](https://www.linkedin.com/in/daiki-kubo/)
 
-Project Link: [https://github.com/daikidev111/clean_arch_go/](https://github.com/daikidev111/clean_arch_go/)
+Project Link: [https://github.com/daikidev111/static_analysis](https://github.com/daikidev111/static_analysis)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
