@@ -49,8 +49,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project ##
 Static analysis is a great tool to find problems often related to performance, coding style, and some logic errors without running the application.
-I have implemented a tool that suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup.
-The reason for building this tool is that errGroup is generally more useful when you wish to handle error for groups of goroutines working on subtasks of a common task in parallel.
+I have implemented a tool that suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup is generally more useful when you wish to handle error for groups of goroutines working on subtasks of a common task in parallel.
 
 
 ## How I did it ##
