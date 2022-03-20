@@ -13,7 +13,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/daikidev111/static_analysis">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="image/logo.jpeg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Static analysis tool</h3>
