@@ -16,15 +16,17 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">Static analysis</h3>
+<h3 align="center">Static analysis tool</h3>
 
   <p align="center">
-    This is a backend development of REST API in Go with Clean Architecture pattern.
+    Static analysis is a great tool to find problems often related to performance, coding style, and some logic errors without running the application.
+    I have implemented a tool that suggests to use sync.ErrGroup instead of sync.WaitGroup as sync.ErrGroup.
+    The reason for building this tool is that errGroup is generally more useful when you wish to execute groups of goroutines working on subtasks of a common task in parallel.
     <br />
-    <a href="https://github.com/daikidev111/clean_arch_go/"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/daikidev111/static_analysis/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/daikidev111/clean_arch_go/">View Demo</a>
+    <a href="https://github.com/daikidev111/static_analysis/">View Demo</a>
   </p>
 </div>
 
@@ -56,31 +58,20 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-In this project, I aimed to achieve the followings below;
-1. Refactor the code (see the [original code](https://github.com/daikidev111/sugori_run/)) to follow the clean architecture properly.
-2. Inspect its testability and maintainability to demonstrate that this architecture is suitable for backend development in Go.
-3. Create a file generator utility that allows to generate files that follow the clean architecture pattern.
-4. Build CI, using Github Action to automate some of the testings.
 
-**List of game screens:**
 
-![ゲーム画面](./img/game_view.png)
+**AST fields**
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-**Screen Transition Diagram**
-![画面遷移図](./img/transition.png)
 
 
 ### Built With
 * [Go](https://go.dev/)
-* [MySQL](https://www.mysql.com/jp/)
-* [Docker](https://www.docker.com/)
-* [Swagger](https://swagger.io/)
+* [Skeleton](https://github.com/gostaticanalysis/skeleton)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -90,7 +81,6 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * Install Go
 
   Follow the steps shown in this [website](https://golang.org/dl/)
